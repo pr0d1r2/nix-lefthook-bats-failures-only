@@ -1,0 +1,6 @@
+---
+pre-push:
+  commands:
+    bats-failures-only:
+      glob: "*.{sh,bats}"
+      run: timeout ${LEFTHOOK_BATS_FAILURES_ONLY_TIMEOUT:-120} lefthook-bats-failures-only {push_files}
