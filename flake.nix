@@ -35,7 +35,13 @@
       packages = forAllSystems (pkgs: {
         default = pkgs.writeShellApplication {
           name = "lefthook-bats-failures-only";
-          runtimeInputs = [ pkgs.bats ];
+          runtimeInputs = [
+            (pkgs.bats.withLibraries (p: [
+              p.bats-support
+              p.bats-assert
+              p.bats-file
+            ]))
+          ];
           text = builtins.readFile ./lefthook-bats-failures-only.sh;
         };
       });
