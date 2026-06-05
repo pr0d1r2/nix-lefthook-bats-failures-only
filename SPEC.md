@@ -37,7 +37,7 @@ Lefthook pre-push hook that runs bats tests and only prints failures + summary. 
 | T2 | x | Fallback raw output on non-TAP failure | C8,V5 |
 | T3 | x | flake.nix: package + devShell | C1,C2,C3 |
 | T4 | x | lefthook-remote.yml: pre-push hook | C4 |
-| T5 | | Fix glob to exclude `.sh` files | B1,V4 |
+| T5 | x | Fix glob to exclude `.sh` files | B1,V4 |
 
 ## §B BUGS
 
