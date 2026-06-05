@@ -37,8 +37,4 @@ Lefthook pre-push hook that runs bats tests and only prints failures + summary. 
 | T2 | x | Fallback raw output on non-TAP failure | C8,V5 |
 | T3 | x | flake.nix: package + devShell | C1,C2,C3 |
 | T4 | x | lefthook-remote.yml: pre-push hook | C4 |
-| T5 | x | Fix glob to exclude `.sh` files | B1,V4 |
-
-## §B BUGS
-
-- B1: Glob `*.{sh,bats}` passes `.sh` files to bats — bats can only execute `.bats` files. Implementation scripts (e.g. `fragments/avahi-alias-nix-serve.sh`) get parsed as tests, fail on first line (`hostname -I` → `illegal option`). Every consumer with `.sh` files alongside `.bats` files is affected. Fix: change glob to `"*.bats"` in `lefthook-remote.yml`.
+| T5 | x | Fix glob to exclude `.sh` files | V4 |
