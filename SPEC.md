@@ -7,6 +7,7 @@ Lefthook pre-push hook that runs bats tests and only prints failures + summary. 
 ## §C CONSTRAINTS
 
 - C1: Nix flake, single package (`lefthook-bats-failures-only`)
+- C1a: Flake inputs are nixpkgs (via `nixpkgs-lock`) + `flake = false` `-src` leaves only — no heavy flake inputs (no `nix-dev-shell-agentic`); devShells `default`/`ci` built inline with `pkgs.mkShell` and inline lefthook wrappers
 - C2: Shell script sourced by `writeShellApplication` — no shebang, no `set` needed
 - C3: GNU coreutils — portable macOS + Linux
 - C4: Lefthook remote — consumers add `lefthook-remote.yml` to their `lefthook.yml`
@@ -28,6 +29,7 @@ Lefthook pre-push hook that runs bats tests and only prints failures + summary. 
 - V3: Exit code matches bats exit code — never swallows failures
 - V4: Glob must only match files bats can execute (`.bats` files)
 - V5: When bats exits non-zero without TAP output, raw output is shown on stderr
+- V6: `nix flake check` green and `nix flake show` lists `packages.<sys>.default = lefthook-bats-failures-only`; flake.lock has no `nix-dev-shell-agentic` subtree
 
 ## §T TASKS
 
@@ -38,3 +40,4 @@ Lefthook pre-push hook that runs bats tests and only prints failures + summary. 
 | T3 | x | flake.nix: package + devShell | C1,C2,C3 |
 | T4 | x | lefthook-remote.yml: pre-push hook | C4 |
 | T5 | x | Fix glob to exclude `.sh` files | V4 |
+| T6 | x | Flatten flake: drop `nix-dev-shell-agentic`, inline `-src` wrappers + mkShell devShells | C1a,V6 |
