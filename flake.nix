@@ -52,21 +52,6 @@
           ];
           text = builtins.readFile ./lefthook-bats-failures-only.sh;
         };
-          default = pkgs.mkShell {
-            packages = [
-              self.packages.${system}.default
-              batsWithLibs
-              pkgs.coreutils
-              pkgs.git
-              pkgs.lefthook
-              pkgs.nix
-              pkgs.parallel
-            ]
-            ++ (lefthookWrappersFor pkgs);
-            shellHook = builtins.replaceStrings [ "@BATS_LIB_PATH@" ] [ "${batsWithLibs}" ] (
-              builtins.readFile ./dev.sh
-            );
-          };
         setting = (set-and-setting.lib.mkSetting { inherit pkgs; }).materialized;
       });
 
