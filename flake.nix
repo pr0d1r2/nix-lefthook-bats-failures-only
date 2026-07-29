@@ -21,6 +21,7 @@
       ...
     }:
     let
+      sasLib = set-and-setting.inputs.set-and-setting.lib;
       supportedSystems = [
         "aarch64-darwin"
         "x86_64-darwin"
@@ -52,16 +53,16 @@
           ];
           text = builtins.readFile ./lefthook-bats-failures-only.sh;
         };
-        setting = (set-and-setting.lib.mkSetting { inherit pkgs; }).materialized;
+        setting = (sasLib.mkSetting { inherit pkgs; }).materialized;
       });
 
       devShells = forAllSystems (
         pkgs:
         let
-          mat = set-and-setting.lib.materializationFor { inherit pkgs fragments; };
+          mat = sasLib.materializationFor { inherit pkgs fragments; };
           sys = pkgs.stdenv.hostPlatform.system;
         in
-        set-and-setting.lib.mkDevShells {
+        sasLib.mkDevShells {
           inherit pkgs;
           basePackages = mat.packages;
           settingHook = ''
@@ -79,12 +80,12 @@
 
       checks = forAllSystems (
         pkgs:
-        (set-and-setting.lib.checksFor {
+        (sasLib.checksFor {
           inherit pkgs fragments;
           src = ./.;
         })
         // {
-          dep-graph = set-and-setting.lib.mkDepGraphCheck {
+          dep-graph = sasLib.mkDepGraphCheck {
             inherit pkgs;
             projectRoot = ./.;
           };
@@ -95,7 +96,7 @@
       apps = forAllSystems (
         pkgs:
         let
-          mat = set-and-setting.lib.materializationFor { inherit pkgs fragments; };
+          mat = sasLib.materializationFor { inherit pkgs fragments; };
         in
         {
           confirm = {
