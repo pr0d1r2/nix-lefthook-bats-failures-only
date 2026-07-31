@@ -21,7 +21,7 @@
       ...
     }:
     let
-      sasLib = set-and-setting.inputs.set-and-setting.lib;
+      sasLib = set-and-setting.lib;
       supportedSystems = [
         "aarch64-darwin"
         "x86_64-darwin"
