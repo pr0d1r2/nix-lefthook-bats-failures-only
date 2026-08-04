@@ -13,6 +13,7 @@
     set-and-setting = {
       url = "github:pr0d1r2/set-and-setting";
       inputs.nixpkgs.follows = "nixpkgs";
+      inputs.nixpkgs-lock.follows = "nixpkgs-lock";
     };
   };
 
