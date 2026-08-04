@@ -14,34 +14,22 @@
   };
 
   outputs =
-    {
+    { self, nixpkgs, set-and-setting, ... }:
+    set-and-setting.lib.mkConsumerFlake {
+      inherit self nixpkgs set-and-setting;
+      lib = set-and-setting.lib;
+      src = ./.;
+      fragments = [ "base" "nix" "shell" "ascii" "markdown" "yaml" ];
+      includeSet = false;
+    };
+/*
       self,
       nixpkgs,
       set-and-setting,
       ...
     }:
-    let
-      sasLib = set-and-setting.lib;
-      supportedSystems = [
-        "aarch64-darwin"
-        "x86_64-darwin"
-        "x86_64-linux"
-        "aarch64-linux"
-      ];
-      forAllSystems =
-        f: nixpkgs.lib.genAttrs supportedSystems (system: f nixpkgs.legacyPackages.${system});
-
-      fragments = [
-        "base"
-        "nix"
-        "shell"
-        "ascii"
-        "markdown"
-        "yaml"
-      ];
-    in
     {
-      packages = forAllSystems (pkgs: {
+      packages = nixpkgs.lib.genAttrs [ "aarch64-darwin" "x86_64-darwin" "x86_64-linux" "aarch64-linux" ] (system: let pkgs = nixpkgs.legacyPackages.${system}; in {
         default = pkgs.writeShellApplication {
           name = "lefthook-bats-failures-only";
           runtimeInputs = [
@@ -53,16 +41,16 @@
           ];
           text = builtins.readFile ./lefthook-bats-failures-only.sh;
         };
-        setting = (sasLib.mkSetting { inherit pkgs; }).materialized;
+        setting = (set-and-setting.lib.mkSetting { inherit pkgs; }).materialized;
       });
 
-      devShells = forAllSystems (
-        pkgs:
+      devShells = nixpkgs.lib.genAttrs [ "aarch64-darwin" "x86_64-darwin" "x86_64-linux" "aarch64-linux" ] (system: let pkgs = nixpkgs.legacyPackages.${system}; in
         let
-          mat = sasLib.materializationFor { inherit pkgs fragments; };
+          fragments = [ "base" "nix" "shell" "ascii" "markdown" "yaml" ];
+          mat = set-and-setting.lib.materializationFor { inherit pkgs fragments; };
           sys = pkgs.stdenv.hostPlatform.system;
         in
-        sasLib.mkDevShells {
+        set-and-setting.lib.mkDevShells {
           inherit pkgs;
           basePackages = mat.packages;
           settingHook = ''
@@ -78,14 +66,14 @@
         }
       );
 
-      checks = forAllSystems (
-        pkgs:
-        (sasLib.checksFor {
-          inherit pkgs fragments;
+      checks = nixpkgs.lib.genAttrs [ "aarch64-darwin" "x86_64-darwin" "x86_64-linux" "aarch64-linux" ] (system: let pkgs = nixpkgs.legacyPackages.${system}; in
+        (set-and-setting.lib.checksFor {
+          inherit pkgs;
+          fragments = [ "base" "nix" "shell" "ascii" "markdown" "yaml" ];
           src = ./.;
         })
         // {
-          dep-graph = sasLib.mkDepGraphCheck {
+          dep-graph = set-and-setting.lib.mkDepGraphCheck {
             inherit pkgs;
             projectRoot = ./.;
           };
@@ -93,10 +81,10 @@
         }
       );
 
-      apps = forAllSystems (
-        pkgs:
+      apps = nixpkgs.lib.genAttrs [ "aarch64-darwin" "x86_64-darwin" "x86_64-linux" "aarch64-linux" ] (system: let pkgs = nixpkgs.legacyPackages.${system}; in
         let
-          mat = sasLib.materializationFor { inherit pkgs fragments; };
+          fragments = [ "base" "nix" "shell" "ascii" "markdown" "yaml" ];
+          mat = set-and-setting.lib.materializationFor { inherit pkgs fragments; };
         in
         {
           confirm = {
@@ -138,4 +126,5 @@
         }
       );
     };
+*/
 }
