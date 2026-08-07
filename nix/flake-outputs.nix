@@ -46,7 +46,14 @@ in
     in
     sasLib.mkDevShells {
       inherit pkgs;
-      basePackages = mat.packages;
+      basePackages = mat.packages ++ [
+        self.packages.${sys}.default
+        (pkgs.bats.withLibraries (p: [
+          p.bats-support
+          p.bats-assert
+          p.bats-file
+        ]))
+      ];
       settingHook = ''
         ${self.packages.${sys}.setting}/bin/sync-setting .
         _assemble_out="$(mktemp -d)"
