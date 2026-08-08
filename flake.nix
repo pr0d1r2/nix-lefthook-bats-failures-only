@@ -20,28 +20,12 @@
       set-and-setting,
       ...
     }:
-    let
-      sasLib = set-and-setting.inputs.set-and-setting.lib;
-      supportedSystems = [
-        "aarch64-darwin"
-        "x86_64-darwin"
-        "x86_64-linux"
-        "aarch64-linux"
-      ];
-      forAllSystems =
-        f: nixpkgs.lib.genAttrs supportedSystems (system: f nixpkgs.legacyPackages.${system});
-
-      fragments = [
-        "base"
-        "nix"
-        "shell"
-        "ascii"
-        "markdown"
-        "yaml"
-      ];
-    in
     {
-      packages = forAllSystems (pkgs: {
+      packages = let
+        sasLib = set-and-setting.lib;
+        supportedSystems = [ "aarch64-darwin" "x86_64-darwin" "x86_64-linux" "aarch64-linux" ];
+        forAllSystems = f: nixpkgs.lib.genAttrs supportedSystems (system: f nixpkgs.legacyPackages.${system});
+      in forAllSystems (pkgs: {
         default = pkgs.writeShellApplication {
           name = "lefthook-bats-failures-only";
           runtimeInputs = [
@@ -56,7 +40,12 @@
         setting = (sasLib.mkSetting { inherit pkgs; }).materialized;
       });
 
-      devShells = forAllSystems (
+      devShells = let
+        sasLib = set-and-setting.lib;
+        supportedSystems = [ "aarch64-darwin" "x86_64-darwin" "x86_64-linux" "aarch64-linux" ];
+        forAllSystems = f: nixpkgs.lib.genAttrs supportedSystems (system: f nixpkgs.legacyPackages.${system});
+        fragments = [ "base" "nix" "shell" "ascii" "markdown" "yaml" ];
+      in forAllSystems (
         pkgs:
         let
           mat = sasLib.materializationFor { inherit pkgs fragments; };
@@ -78,7 +67,12 @@
         }
       );
 
-      checks = forAllSystems (
+      checks = let
+        sasLib = set-and-setting.lib;
+        supportedSystems = [ "aarch64-darwin" "x86_64-darwin" "x86_64-linux" "aarch64-linux" ];
+        forAllSystems = f: nixpkgs.lib.genAttrs supportedSystems (system: f nixpkgs.legacyPackages.${system});
+        fragments = [ "base" "nix" "shell" "ascii" "markdown" "yaml" ];
+      in forAllSystems (
         pkgs:
         (sasLib.checksFor {
           inherit pkgs fragments;
@@ -93,7 +87,12 @@
         }
       );
 
-      apps = forAllSystems (
+      apps = let
+        sasLib = set-and-setting.lib;
+        supportedSystems = [ "aarch64-darwin" "x86_64-darwin" "x86_64-linux" "aarch64-linux" ];
+        forAllSystems = f: nixpkgs.lib.genAttrs supportedSystems (system: f nixpkgs.legacyPackages.${system});
+        fragments = [ "base" "nix" "shell" "ascii" "markdown" "yaml" ];
+      in forAllSystems (
         pkgs:
         let
           mat = sasLib.materializationFor { inherit pkgs fragments; };
