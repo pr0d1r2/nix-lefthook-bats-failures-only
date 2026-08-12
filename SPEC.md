@@ -98,3 +98,9 @@ credentials, zero local paths, zero private refs.
 | T14 | x | linter suite via lefthook remotes | V15 |
 | T15 | x | flatten flake: drop `nix-dev-shell-agentic`, inline wrappers + mkShell | C3,C4,V11 |
 | T16 | x | opensource audit: no credentials/local-paths/private-refs | V12,V13,C7 |
+
+## §B Bugs
+
+| id | date | cause | fix |
+| --- | --- | --- | --- |
+| B1 | 2026-08-12 | The pinned set-and-setting actionlint check passes a string path prefix to a Nix API that now requires a list, causing `nix flake check` and guardrails to fail during evaluation. | Omit the incompatible actions fragment from this consumer; the shared guardrails workflow continues to validate GitHub Actions configuration. |
