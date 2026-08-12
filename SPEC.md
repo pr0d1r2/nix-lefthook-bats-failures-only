@@ -104,3 +104,4 @@ credentials, zero local paths, zero private refs.
 | id | date | cause | fix |
 | --- | --- | --- | --- |
 | B1 | 2026-08-12 | The pinned set-and-setting actionlint check passes a string path prefix to a Nix API that now requires a list, causing `nix flake check` and guardrails to fail during evaluation. | Omit the incompatible actions fragment from this consumer; the shared guardrails workflow continues to validate GitHub Actions configuration. |
+| B2 | 2026-08-12 | Omitting the actions fragment left the generated `lefthook.yml` referencing `lefthook-actionlint` without provisioning that command, so guardrail coherence failed even though fidelity passed locally. | Restore the actions fragment so lefthook configuration generation and dev-shell tool provisioning stay consistent. |
