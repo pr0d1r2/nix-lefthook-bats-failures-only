@@ -80,6 +80,12 @@ credentials, zero local paths, zero private refs.
 
 ## §T Tasks
 
+## §B Bugs
+
+| id | date | cause | fix |
+| --- | --- | --- | --- |
+| B1 | 2026-08-13 | The pinned set-and-setting actions fragment passed a workflow path regex as a string to the Nix source filter, causing flake evaluation to fail before checks ran. | Removed the incompatible fragment; workflow validation remains provided by the guardrails workflow. |
+
 | id | status | task | cites |
 | --- | --- | --- | --- |
 | T1 | x | TAP filter wrapper: failures-only output + summary | C1,C2,V1,V2,V4,I.cli |
