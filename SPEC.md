@@ -85,6 +85,7 @@ credentials, zero local paths, zero private refs.
 | id | date | cause | fix |
 | --- | --- | --- | --- |
 | B1 | 2026-08-13 | The pinned set-and-setting actions fragment passed a workflow path regex as a string to the Nix source filter, causing flake evaluation to fail before checks ran. | Removed the incompatible fragment; workflow validation remains provided by the guardrails workflow. |
+| B2 | 2026-08-13 | The tracked lefthook configuration retained commands from the removed actions fragment, so the generated configuration failed the guardrails fidelity check. | Regenerated lefthook.yml from the active base, nix, shell, ascii, markdown, and yaml fragments. |
 
 | id | status | task | cites |
 | --- | --- | --- | --- |
