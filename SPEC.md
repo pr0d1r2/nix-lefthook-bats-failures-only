@@ -84,13 +84,14 @@ credentials, zero local paths, zero private refs.
 
 | id | date | cause | fix |
 | --- | --- | --- | --- |
-| B1 | 2026-08-13 | The pinned set-and-setting actions fragment passed a workflow path regex as a string to the Nix source filter, causing flake evaluation to fail before checks ran. | Removed the incompatible fragment; workflow validation remains provided by the guardrails workflow. |
-| B2 | 2026-08-13 | The tracked lefthook configuration retained commands from the removed actions fragment, so the generated configuration failed the guardrails fidelity check. | Regenerated lefthook.yml from the active base, nix, shell, ascii, markdown, and yaml fragments. |
-| B3 | 2026-08-14 | The flake omitted the actions fragment even though the pinned set-and-setting assembler includes it in the canonical fragment set, so guardrails generated a different lefthook.yml. | Added actions to the flake fragments and restored the canonical actionlint commands in lefthook.yml. |
-| B4 | 2026-08-14 | The pinned actions fragment passes the workflow regex as a scalar to the Nix source filter, which now requires a list, so flake evaluation fails while constructing the actionlint check. | Removed the incompatible actions fragment and its generated lefthook commands; workflow validation remains provided by the guardrails workflow. |
-| B5 | 2026-08-14 | The guardrails assembler’s canonical fragment set includes actions, but the flake omitted its generated actionlint commands and the pinned actions check fails because it passes a scalar workflow regex where the source filter requires a list. | Restored the canonical actionlint commands and provided a standalone `lefthook-actionlint` wrapper via `extraPackages`, while retaining the actions fragment out of the broken pinned check set. |
-| B6 | 2026-08-14 | The consumer flake selected six lefthook fragments and omitted the canonical `actions` fragment, so the dev-shell assembler regenerated `lefthook.yml` without actionlint and guardrails reported a fidelity mismatch against `base actions nix shell ascii markdown yaml`. | Added the `actions` fragment to the flake’s single fragment list and regenerated the canonical lefthook configuration. |
-| B7 | 2026-08-14 | The pinned set-and-setting actionlint check passes a scalar `pathPrefix` to the newer nixpkgs `sourceByRegex` API, making the required `actions` fragment fail during flake evaluation. | Kept `actions` in materialization for canonical lefthook fidelity, bypassed only the incompatible upstream helper, and added an equivalent local actionlint check over workflow files. |
+| B1 | 2026-08-13 | Pinned actions fragment passed a workflow regex as a string to Nix’s source filter. | Removed incompatible fragment; guardrails still validate workflows. |
+| B2 | 2026-08-13 | Tracked lefthook config retained commands from the removed actions fragment. | Regenerated lefthook.yml from active fragments. |
+| B3 | 2026-08-14 | Flake omitted actions although the canonical assembler includes it, producing a different lefthook.yml. | Restored actions and canonical actionlint commands. |
+| B4 | 2026-08-14 | Pinned actions fragment passed a scalar where the source filter requires a list. | Removed incompatible fragment and generated commands. |
+| B5 | 2026-08-14 | Canonical actions commands were absent while the pinned check used an incompatible scalar regex. | Restored commands and added a local actionlint wrapper. |
+| B6 | 2026-08-14 | Six selected fragments omitted canonical actions, causing guardrails fidelity mismatch. | Added actions and regenerated lefthook.yml. |
+| B7 | 2026-08-14 | Pinned actionlint passed scalar pathPrefix to newer sourceByRegex. | Bypassed only that helper and added equivalent local validation. |
+| B8 | 2026-08-14 | SPEC.md exceeded 8 KiB, and actionlint shell embedded in flake.nix violated nix-no-embedded-shell. | Shortened history and moved the check to scripts/actionlint-check.sh. |
 
 | id | status | task | cites |
 | --- | --- | --- | --- |
