@@ -23,8 +23,18 @@
     }:
     set-and-setting.lib.mkConsumerFlake {
       inherit self nixpkgs set-and-setting;
+      lib = set-and-setting.lib // {
+        # The pinned helper still passes a scalar pathPrefix to the newer
+        # nixpkgs sourceByRegex API. Keep the canonical actions fragment for
+        # materialization, and provide the equivalent check locally.
+        checksFor = args:
+          set-and-setting.lib.checksFor (args // {
+            fragments = builtins.filter (fragment: fragment != "actions") args.fragments;
+          });
+      };
       fragments = [
         "base"
+        "actions"
         "nix"
         "shell"
         "ascii"
@@ -51,6 +61,14 @@
             actionlint "$@"
           '';
         };
+      };
+      extraChecks = pkgs: {
+        actionlint = pkgs.runCommand "actionlint-check" { nativeBuildInputs = [ pkgs.actionlint ]; } ''
+          cd ${./.}
+          mapfile -t workflows < <(find .github/workflows -type f \( -name '*.yml' -o -name '*.yaml' \) | sort)
+          if [ ''${#workflows[@]} -gt 0 ]; then actionlint "''${workflows[@]}"; fi
+          touch $out
+        '';
       };
     };
   /*
