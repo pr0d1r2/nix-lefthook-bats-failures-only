@@ -88,6 +88,7 @@ credentials, zero local paths, zero private refs.
 | B2 | 2026-08-13 | The tracked lefthook configuration retained commands from the removed actions fragment, so the generated configuration failed the guardrails fidelity check. | Regenerated lefthook.yml from the active base, nix, shell, ascii, markdown, and yaml fragments. |
 | B3 | 2026-08-14 | The flake omitted the actions fragment even though the pinned set-and-setting assembler includes it in the canonical fragment set, so guardrails generated a different lefthook.yml. | Added actions to the flake fragments and restored the canonical actionlint commands in lefthook.yml. |
 | B4 | 2026-08-14 | The pinned actions fragment passes the workflow regex as a scalar to the Nix source filter, which now requires a list, so flake evaluation fails while constructing the actionlint check. | Removed the incompatible actions fragment and its generated lefthook commands; workflow validation remains provided by the guardrails workflow. |
+| B5 | 2026-08-14 | The guardrails assembler’s canonical fragment set includes actions, but the flake omitted its generated actionlint commands and the pinned actions check fails because it passes a scalar workflow regex where the source filter requires a list. | Restored the canonical actionlint commands and provided a standalone `lefthook-actionlint` wrapper via `extraPackages`, while retaining the actions fragment out of the broken pinned check set. |
 
 | id | status | task | cites |
 | --- | --- | --- | --- |
