@@ -87,6 +87,7 @@ credentials, zero local paths, zero private refs.
 | B1 | 2026-08-13 | The pinned set-and-setting actions fragment passed a workflow path regex as a string to the Nix source filter, causing flake evaluation to fail before checks ran. | Removed the incompatible fragment; workflow validation remains provided by the guardrails workflow. |
 | B2 | 2026-08-13 | The tracked lefthook configuration retained commands from the removed actions fragment, so the generated configuration failed the guardrails fidelity check. | Regenerated lefthook.yml from the active base, nix, shell, ascii, markdown, and yaml fragments. |
 | B3 | 2026-08-14 | The flake omitted the actions fragment even though the pinned set-and-setting assembler includes it in the canonical fragment set, so guardrails generated a different lefthook.yml. | Added actions to the flake fragments and restored the canonical actionlint commands in lefthook.yml. |
+| B4 | 2026-08-14 | The pinned actions fragment passes the workflow regex as a scalar to the Nix source filter, which now requires a list, so flake evaluation fails while constructing the actionlint check. | Removed the incompatible actions fragment and its generated lefthook commands; workflow validation remains provided by the guardrails workflow. |
 
 | id | status | task | cites |
 | --- | --- | --- | --- |
