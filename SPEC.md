@@ -80,6 +80,19 @@ credentials, zero local paths, zero private refs.
 
 ## §T Tasks
 
+## §B Bugs
+
+| id | date | cause | fix |
+| --- | --- | --- | --- |
+| B1 | 2026-08-13 | Pinned actions fragment passed a workflow regex as a string to Nix’s source filter. | Removed incompatible fragment; guardrails still validate workflows. |
+| B2 | 2026-08-13 | Tracked lefthook config retained commands from the removed actions fragment. | Regenerated lefthook.yml from active fragments. |
+| B3 | 2026-08-14 | Flake omitted actions although the canonical assembler includes it, producing a different lefthook.yml. | Restored actions and canonical actionlint commands. |
+| B4 | 2026-08-14 | Pinned actions fragment passed a scalar where the source filter requires a list. | Removed incompatible fragment and generated commands. |
+| B5 | 2026-08-14 | Canonical actions commands were absent while the pinned check used an incompatible scalar regex. | Restored commands and added a local actionlint wrapper. |
+| B6 | 2026-08-14 | Six selected fragments omitted canonical actions, causing guardrails fidelity mismatch. | Added actions and regenerated lefthook.yml. |
+| B7 | 2026-08-14 | Pinned actionlint passed scalar pathPrefix to newer sourceByRegex. | Bypassed only that helper and added equivalent local validation. |
+| B8 | 2026-08-14 | SPEC.md exceeded 8 KiB, and actionlint shell embedded in flake.nix violated nix-no-embedded-shell. | Shortened history and moved the check to scripts/actionlint-check.sh. |
+
 | id | status | task | cites |
 | --- | --- | --- | --- |
 | T1 | x | TAP filter wrapper: failures-only output + summary | C1,C2,V1,V2,V4,I.cli |
