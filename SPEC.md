@@ -92,6 +92,7 @@ credentials, zero local paths, zero private refs.
 | B6 | 2026-08-14 | Six selected fragments omitted canonical actions, causing guardrails fidelity mismatch. | Added actions and regenerated lefthook.yml. |
 | B7 | 2026-08-14 | Pinned actionlint passed scalar pathPrefix to newer sourceByRegex. | Bypassed only that helper and added equivalent local validation. |
 | B8 | 2026-08-14 | SPEC.md exceeded 8 KiB, and actionlint shell embedded in flake.nix violated nix-no-embedded-shell. | Shortened history and moved the check to scripts/actionlint-check.sh. |
+| B9 | 2026-08-14 | A dead flake draft was left behind using unsupported block-comment syntax, so Nix failed with a syntax error. | Removed the malformed draft. |
 
 | id | status | task | cites |
 | --- | --- | --- | --- |
