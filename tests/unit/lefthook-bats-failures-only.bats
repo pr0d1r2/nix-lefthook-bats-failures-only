@@ -5,6 +5,16 @@ setup() {
     load "${BATS_LIB_PATH}/bats-assert/load.bash"
 
     TMP="$BATS_TEST_TMPDIR"
+
+    # The standard's dev shell does not carry this repo's own package, so
+    # exercise the working-tree script under the same strict mode
+    # writeShellApplication gives packages.default.
+    SCRIPT="$BATS_TEST_DIRNAME/../../lefthook-bats-failures-only.sh"
+    mkdir -p "$TMP/bin"
+    printf '#!/usr/bin/env bash\nexec bash -euo pipefail "%s" "$@"\n' \
+        "$SCRIPT" >"$TMP/bin/lefthook-bats-failures-only"
+    chmod +x "$TMP/bin/lefthook-bats-failures-only"
+    export PATH="$TMP/bin:$PATH"
 }
 
 @test "all-passing suite prints only summary" {

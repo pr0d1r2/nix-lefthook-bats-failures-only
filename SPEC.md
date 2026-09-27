@@ -93,6 +93,7 @@ credentials, zero local paths, zero private refs.
 | B7 | 2026-08-14 | Pinned actionlint passed scalar pathPrefix to newer sourceByRegex. | Bypassed only that helper and added equivalent local validation. |
 | B8 | 2026-08-14 | SPEC.md exceeded 8 KiB, and actionlint shell embedded in flake.nix violated nix-no-embedded-shell. | Shortened history and moved the check to scripts/actionlint-check.sh. |
 | B9 | 2026-08-14 | A dead flake draft was left behind using unsupported block-comment syntax, so Nix failed with a syntax error. | Removed the malformed draft. |
+| B10 | 2026-09-27 | New nixpkgs made the pinned standard's `bats --jobs` hang CI for 6h; the local `lib` override blocked bumping the standard. | Dropped the B7/B8 shims, bumped the standard, added `[*.sh] switch_case_indent`. |
 
 | id | status | task | cites |
 | --- | --- | --- | --- |
