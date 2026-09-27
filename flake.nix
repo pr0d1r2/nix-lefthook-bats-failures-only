@@ -21,57 +21,79 @@
       set-and-setting,
       ...
     }:
-    set-and-setting.lib.mkConsumerFlake {
-      inherit self nixpkgs set-and-setting;
-      lib = set-and-setting.lib // {
-        # The pinned helper still passes a scalar pathPrefix to the newer
-        # nixpkgs sourceByRegex API. Keep the canonical actions fragment for
-        # materialization, and provide the equivalent check locally.
-        checksFor =
-          args:
-          set-and-setting.lib.checksFor (
-            args
-            // {
-              fragments = builtins.filter (fragment: fragment != "actions") args.fragments;
-            }
-          );
-      };
-      fragments = [
-        "base"
-        "actions"
-        "nix"
-        "shell"
-        "ascii"
-        "markdown"
-        "yaml"
-      ];
-      src = ./.;
-      extraPackages = pkgs: {
-        default = pkgs.writeShellApplication {
-          name = "lefthook-bats-failures-only";
-          runtimeInputs = [
-            (pkgs.bats.withLibraries (p: [
-              p.bats-support
-              p.bats-assert
-              p.bats-file
-            ]))
-          ];
-          text = builtins.readFile ./lefthook-bats-failures-only.sh;
+    with rec {
+      consumer = set-and-setting.lib.mkConsumerFlake {
+        inherit self nixpkgs set-and-setting;
+        lib = set-and-setting.lib // {
+          # The pinned helper still passes a scalar pathPrefix to the newer
+          # nixpkgs sourceByRegex API. Keep the canonical actions fragment for
+          # materialization, and provide the equivalent check locally.
+          checksFor =
+            args:
+            set-and-setting.lib.checksFor (
+              args
+              // {
+                fragments = builtins.filter (fragment: fragment != "actions") args.fragments;
+              }
+            );
         };
-        actionlint = pkgs.writeShellApplication {
-          name = "lefthook-actionlint";
-          runtimeInputs = [ pkgs.actionlint ];
-          text = ''
-            actionlint "$@"
+        fragments = [
+          "base"
+          "actions"
+          "nix"
+          "shell"
+          "ascii"
+          "markdown"
+          "yaml"
+        ];
+        src = ./.;
+        extraPackages = pkgs: {
+          default = pkgs.writeShellApplication {
+            name = "lefthook-bats-failures-only";
+            runtimeInputs = [
+              (pkgs.bats.withLibraries (p: [
+                p.bats-support
+                p.bats-assert
+                p.bats-file
+              ]))
+            ];
+            text = builtins.readFile ./lefthook-bats-failures-only.sh;
+          };
+          actionlint = pkgs.writeShellApplication {
+            name = "lefthook-actionlint";
+            runtimeInputs = [ pkgs.actionlint ];
+            text = ''
+              actionlint "$@"
+            '';
+          };
+        };
+        extraChecks = pkgs: {
+          actionlint = pkgs.runCommand "actionlint-check" { nativeBuildInputs = [ pkgs.actionlint ]; } ''
+            cd ${./.}
+            bash ${./scripts/actionlint-check.sh}
+            touch $out
           '';
         };
       };
-      extraChecks = pkgs: {
-        actionlint = pkgs.runCommand "actionlint-check" { nativeBuildInputs = [ pkgs.actionlint ]; } ''
-          cd ${./.}
-          bash ${./scripts/actionlint-check.sh}
-          touch $out
-        '';
-      };
+    };
+    consumer
+    // {
+      devShells = nixpkgs.lib.mapAttrs (
+        system: shells:
+        nixpkgs.lib.mapAttrs (
+          _: shell:
+          nixpkgs.legacyPackages.${system}.mkShell {
+            inputsFrom = [ shell ];
+            packages = [
+              consumer.packages.${system}.default
+              (nixpkgs.legacyPackages.${system}.bats.withLibraries (p: [
+                p.bats-support
+                p.bats-assert
+                p.bats-file
+              ]))
+            ];
+          }
+        ) shells
+      ) consumer.devShells;
     };
 }
