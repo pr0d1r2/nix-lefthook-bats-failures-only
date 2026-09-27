@@ -54,10 +54,14 @@ missed.
 
 ## The guardrails are this repository's own
 
-This repository is gated by `lefthook.yml`. Before a machine-authored branch is
-pushed, it is run against that gate: the same checks a human gets on
-`git commit`, in the same environment continuous integration uses. A change the
-gate refuses is not pushed and no pull request is opened for it.
+The loop's local gate is the generated `lefthook.yml`; this file is assembled
+from the flake's guardrail fragments and is intentionally not checked in. The
+checked-in consumer hook is [`lefthook-remote.yml`](../lefthook-remote.yml),
+while CI runs the repository's reusable guardrail workflow. Before a
+machine-authored branch is pushed, the loop runs the generated local gate: the
+same checks a human gets on `git commit`, in the same environment continuous
+integration uses. A change the gate refuses is not pushed and no pull request
+is opened for it.
 
 Run it yourself:
 
