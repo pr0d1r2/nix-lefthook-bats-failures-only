@@ -86,6 +86,7 @@
             inputsFrom = [ shell ];
             packages = [
               consumer.packages.${system}.default
+              nixpkgs.legacyPackages.${system}.actionlint
               (nixpkgs.legacyPackages.${system}.bats.withLibraries (p: [
                 p.bats-support
                 p.bats-assert
