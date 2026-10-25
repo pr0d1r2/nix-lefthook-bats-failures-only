@@ -42,6 +42,7 @@
               p.bats-assert
               p.bats-file
             ]))
+            pkgs.parallel
           ];
           text = builtins.readFile ./lefthook-bats-failures-only.sh;
         };

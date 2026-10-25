@@ -37,7 +37,8 @@ credentials, zero local paths, zero private refs.
   a lefthook remote
 - I.flake: `packages.${system}.default` — the `lefthook-bats-failures-only`
   pkg; `runtimeInputs` is `bats.withLibraries` (bats-support, bats-assert,
-  bats-file) so suites that `load` those helpers run inside the hook
+  bats-file) so suites that `load` those helpers run inside the hook, plus
+  `parallel` so `bats --jobs` works outside a dev shell
 - I.devshell: `devShells.${system}.default` + `.#ci` — `mkShell` providing
   the pkg, `bats.withLibraries`, lefthook, nix, git, parallel, coreutils,
   and all linter wrappers; `ci` aliases `default`
@@ -62,7 +63,8 @@ credentials, zero local paths, zero private refs.
 - V8: The hook run is bounded by `timeout` using
   `LEFTHOOK_BATS_FAILURES_ONLY_TIMEOUT` (default `120`)
 - V9: The pkg's `runtimeInputs` uses `bats.withLibraries`, not plain `bats`,
-  so suites loading bats-support/bats-assert/bats-file succeed under the hook
+  so suites loading bats-support/bats-assert/bats-file succeed under the hook;
+  it also carries `pkgs.parallel`, which bats needs for `--jobs`
 - V10: `dev.sh` exports `BATS_LIB_PATH` (substituted at build time) and runs
   `lefthook install` when `.git/hooks/pre-commit` is absent
 - V11: `nix flake check` is green and `nix flake show` lists
