@@ -51,3 +51,8 @@ BATS
     assert_output --partial "not ok"
     refute_output --partial "ok 1"
 }
+
+@test "flake pkg runtimeInputs carry GNU parallel for bats --jobs" {
+    run grep -F 'pkgs.parallel' "$BATS_TEST_DIRNAME/../../flake.nix"
+    assert_success
+}
