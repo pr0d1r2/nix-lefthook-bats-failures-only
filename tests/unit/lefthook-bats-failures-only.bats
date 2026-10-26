@@ -52,7 +52,22 @@ BATS
     refute_output --partial "ok 1"
 }
 
+@test "--jobs is forwarded to bats and the summary counts every test" {
+    cat > "$TMP/jobs.bats" <<'BATS'
+#!/usr/bin/env bats
+@test "pass" { true; }
+@test "fail" { false; }
+BATS
+    run lefthook-bats-failures-only --jobs 2 "$TMP/jobs.bats"
+    assert_failure
+    assert_output --partial "not ok"
+    assert_output --partial "2 tests, 1 failures"
+}
+
 @test "flake pkg runtimeInputs carry GNU parallel for bats --jobs" {
-    run grep -F 'pkgs.parallel' "$BATS_TEST_DIRNAME/../../flake.nix"
+    # Scope to the runtimeInputs list: pkgs.parallel elsewhere in flake.nix
+    # (a comment, another attribute) never reaches the installed binary's PATH.
+    run sed -n '/runtimeInputs = \[/,/^ *\];/p' "$BATS_TEST_DIRNAME/../../flake.nix"
     assert_success
+    assert_line --regexp '^ *pkgs\.parallel$'
 }
